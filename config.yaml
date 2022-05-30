@@ -22,7 +22,6 @@ threaded: yes
 # turned on, then year will always equal original_year and so on.
 original_date: yes
 
-
 # A boolean controlling the track numbering style on multi-disc releases. By default (per_disc_numbering: no), tracks
 # are numbered per-release, so the first track on the second disc has track number N+1 where N is the number of tracks
 # on the first disc. If this per_disc_numbering is enabled, then the first (non-pregap) track on each disc always has
@@ -122,7 +121,10 @@ match:
 item_fields:
     multidisc: 1 if disctotal > 1 else 0
     disc_and_track: u'%1i-%02i' % (disc, track) if disctotal > 1 else u'%02i' % (track)
-    bilingual_albumartist: u'%s' % (albumartist) if albumartist == albumartist_sort else u'%s (%s)' % (albumartist_sort, albumartist)
+
+# You can also define fields for album templates.
+album_fields:   
+    albumartist_bilingual: u'%s' % (albumartist) if albumartist == albumartist_sort else u'%s (%s)' % (albumartist_sort, albumartist)
 
 
 #################
@@ -134,9 +136,41 @@ item_fields:
 # subfolders by grouping albums or artists alphabetically (e.g. A-F, G-M, N-Z).
 
 bucket:
+    # Ranges to use for all substitutions occurring on textual fields.
+    bucket_alpha:
+    - '#-!'
+    - '0-9'
+    - 'A'
+    - 'B'
+    - 'C'
+    - 'D'
+    - 'E'
+    - 'F'
+    - 'G'
+    - 'H'
+    - 'I'
+    - 'J'
+    - 'K'
+    - 'L'
+    - 'M'
+    - 'N'
+    - 'O'
+    - 'P'
+    - 'Q'
+    - 'R'
+    - 'S'
+    - 'T'
+    - 'U'
+    - 'V'
+    - 'W'
+    - 'X'
+    - 'Y'
+    - 'Z'
+    
     # A `range: regex` mapping (one per line) where range is one of the bucket_alpha ranges and value is a regex that
-    # overrides original range definition.
-    bucket_alpha_regex: [A-Z] # Create folders with the first letters of the album artist's names.
+    # overrides original range definition.    
+    bucket_alpha_regex:
+        '#-!': ^[^0-9a-zA-ZåÅäÄöÖ]
 
 
 ###################
@@ -199,12 +233,25 @@ missing:
     total: no
 
 
+###############
+# edit plugin #
+###############
+
+# The edit plugin lets you modify music metadata using your favorite text editor.
+
+edit:
+    # A space-separated list of item fields to include in the editor by default.
+    itemfields:  track title artist album year
+    
+    # The same when editing albums.
+    albumfields: track title artist albumartist album year albumartist_bilingual
+
 #############################
 # Path format configuration #
 #############################
 
 paths:
-    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/[$original_year] $album%aunique{}/$disc_and_track. $title
+    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist_bilingual}/[$original_year] $album%aunique{}/$disc_and_track. $title
     singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/Non-Album/$title
     comp: Compilations/$album%aunique{}/$disc_and_track. $title
     albumtype:soundtrack: Soundtracks/$album%aunique{}/$disc_and_track. $title
