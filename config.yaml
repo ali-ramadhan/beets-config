@@ -38,7 +38,7 @@ format_album: "$albumartist - $album"
 format_item: "[$format] $artist - $album - $title [$bitdepth/$samplerate $bitrate, $length]"
 
 # A space-separated list of plugin module names to load.
-plugins: discogs inline bucket info edit the fetchart embedart lastgenre badfiles missing
+plugins: badfiles bucket discogs edit embedart fetchart hook info inline lastgenre missing the
 
 
 ##############
@@ -255,4 +255,20 @@ paths:
     singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/Non-Album/$title
     comp: Compilations/$album%aunique{}/$disc_and_track. $title
     albumtype:soundtrack: Soundtracks/$album%aunique{}/$disc_and_track. $title
+
+
+###############
+# hook plugin #
+###############
+
+# Internally, beets uses events to tell plugins when something happens. For example, one event fires when the importer
+# finishes processes a song, and another triggers just before the beet command exits. The hook plugin lets you run
+# commands in response to these events.
+
+hook:
+    hooks:
+        # - event: album_imported
+        #   command: printf "\033[38;5;76m √\033[m \033[1m\033[m \033[38;5;30m{album}\033[m\n"
+        # - event: item_copied
+        #   command: printf "Copied \033[33m\"{source}\"\033[39m -> \033[32m\"{destination}\"\033[39m\n"
 
