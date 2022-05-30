@@ -123,8 +123,13 @@ item_fields:
     disc_and_track: u'%1i-%02i' % (disc, track) if disctotal > 1 else u'%02i' % (track)
 
 # You can also define fields for album templates.
-album_fields:   
-    albumartist_bilingual: u'%s' % (albumartist) if albumartist == albumartist_sort else u'%s (%s)' % (albumartist_sort, albumartist)
+# album_fields:   
+#     albumartist_bilingual: |
+#         baa = input("Enter bilingual album artist: ")
+#         if baa != "":
+#             return baa
+#         else:
+#             return albumartist
 
 
 #################
@@ -244,14 +249,14 @@ edit:
     itemfields:  track title artist album year
     
     # The same when editing albums.
-    albumfields: track title artist albumartist album year albumartist_bilingual
+    albumfields: track title artist albumartist album year
 
 #############################
 # Path format configuration #
 #############################
 
 paths:
-    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist_bilingual}/[$original_year] $album%aunique{}/$disc_and_track. $title
+    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/[$original_year] $album%aunique{}/$disc_and_track. $title
     singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/Non-Album/$title
     comp: Compilations/$album%aunique{}/$disc_and_track. $title
     albumtype:soundtrack: Soundtracks/$album%aunique{}/$disc_and_track. $title
@@ -265,10 +270,10 @@ paths:
 # finishes processes a song, and another triggers just before the beet command exits. The hook plugin lets you run
 # commands in response to these events.
 
-hook:
-    hooks:
-        # - event: album_imported
-        #   command: printf "\033[38;5;76m √\033[m \033[1m\033[m \033[38;5;30m{album}\033[m\n"
-        # - event: item_copied
-        #   command: printf "Copied \033[33m\"{source}\"\033[39m -> \033[32m\"{destination}\"\033[39m\n"
+# hook:
+#     hooks:
+#         - event: album_imported
+#           command: printf "\033[38;5;76m √\033[m \033[1m\033[m \033[38;5;30m{album}\033[m\n"
+#         - event: item_copied
+#           command: printf "Copied\":\" \033[33m\"{source}\"\033[39m -> \033[32m\"{destination}\"\033[39m\n"
 
