@@ -37,8 +37,11 @@ format_album: "$albumartist - $album"
 # Format to use when listing individual items with the list command and other commands that need to print out items.
 format_item: "[$format] $artist - $album - $title [$bitdepth/$samplerate $bitrate, $length]"
 
+# Set the maximum number of characters in a filename, after which names will be truncated.
+max_filename_length: 255
+
 # A space-separated list of plugin module names to load.
-plugins: badfiles bucket discogs edit embedart fetchart hook info inline lastgenre missing the
+plugins: badfiles bucket discogs embedart edit embedart fetchart hook info inline lastgenre missing the
 
 
 ##############
@@ -104,7 +107,7 @@ match:
     # ordered list of preferred countries and media types.
     preferred:
         countries: ['XW', US', 'CA', 'EU', 'GB|UK']
-        media: ['Digital Media|File', 'Digital Media', 'CD']
+        media: ['Digital Media|File', 'Digital Media']
         original_year: yes
 
 
@@ -185,8 +188,26 @@ bucket:
 # The fetchart plugin retrieves album art images from various sources on the Web and stores them as image files.
 
 fetchart:
+    # Enable automatic album art fetching during import.
+    auto: yes
+    
     # If enabled, fetchart retrieves artwork in the highest resolution it can find.
     high_resolution: yes
+
+
+###################
+# embedart plugin #
+###################
+
+embedart:
+    # Enable automatic album art embedding.
+    auto: yes
+    
+    # Avoid embedding album art for files that already have art embedded.
+    ifempty: no
+    
+    # Automatically remove the album art file for the album after it has been embedded.
+    remove_art_file: no
 
 
 ####################
@@ -203,7 +224,7 @@ lastgenre:
     count: 2
     
     # Sort genres by the most to least specific, rather than most to least popular. 
-    prefer_specific: yes
+    prefer_specific: no
 
 
 ###################
@@ -251,6 +272,7 @@ edit:
     # The same when editing albums.
     albumfields: track title artist albumartist album year
 
+
 #############################
 # Path format configuration #
 #############################
@@ -258,8 +280,8 @@ edit:
 paths:
     default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/[$original_year] $album%aunique{}/$disc_and_track. $title
     singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/Non-Album/$title
-    comp: Compilations/$album%aunique{}/$disc_and_track. $title
-    albumtype:soundtrack: Soundtracks/$album%aunique{}/$disc_and_track. $title
+    comp: Compilations/%the{$album%aunique{}}/$disc_and_track. $title
+    albumtype:soundtrack: Soundtracks/%the{$album%aunique{}}/$disc_and_track. $title
 
 
 ###############
