@@ -1,0 +1,94 @@
+## Local options
+
+directory: ~/sandbox/tagged/
+library: ~/beets/library.db
+
+## Global options
+
+threaded: yes
+original_date: yes
+per_disc_numbering: yes
+
+art_filename: cover
+format_album: "$albumartist - $album"
+format_item: "[$format] $artist - $album - $title [$bitdepth/$samplerate $bitrate, $length]"
+
+plugins: discogs inline bucket info edit the fetchart embedart lastgenre badfiles missing
+
+## UI options
+
+ui:
+    color: yes
+
+## Importer options
+
+import:
+    languages: en
+    write: yes
+    copy: yes
+    move: no
+    from_scratch: yes
+    detail: yes
+    bell: yes
+    log: ~/beets/import.log
+
+## MusicBrainz options
+
+musicbrainz:
+    genres: yes
+
+## Autotagger matching options
+
+match:
+    preferred:
+        countries: ['XW', US', 'CA', 'EU', 'GB|UK']
+        media: ['Digital Media|File', 'Digital Media']
+        original_year: yes
+
+## inline plugin
+
+item_fields:
+    multidisc: 1 if disctotal > 1 else 0
+    disc_and_track: u'%1i-%02i' % (disc, track) if disctotal > 1 else u'%02i' % (track)
+    bilingual_albumartist: u'%s' % (albumartist) if albumartist == albumartist_sort else u'%s (%s)' % (albumartist_sort, albumartist)
+
+## bucket plugin
+
+bucket:
+  bucket_alpha_regex: [A-Z] # Create folders with the first letters of the album artist's names.
+
+## fetchart plugin
+
+fetchart:
+    high_resolution: yes
+
+## lastgenre plugin
+
+lastgenre:
+    auto: yes
+    count: 2
+    prefer_specific: yes
+
+## badfiles plugin
+
+badfiles:
+    check_on_import: yes
+    commands:
+        mp3: mp3val
+        flac: flac --test --warnings-as-errors
+
+## missing plugin
+
+missing:
+    format: $albumartist - $album - $title
+    count: no
+    total: no
+
+## Path format configuration
+
+paths:
+    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/[$original_year] $album%aunique{}/$disc_and_track. $title
+    singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/Non-Album/$title
+    comp: Compilations/$album%aunique{}/$disc_and_track. $title
+    albumtype:soundtrack: Soundtracks/$album%aunique{}/$disc_and_track. $title
+
