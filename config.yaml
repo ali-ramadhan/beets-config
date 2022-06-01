@@ -3,10 +3,10 @@
 #################
 
 # The directory to which files will be copied/moved when adding them to the library.
-directory: ~/sandbox/tagged/
+directory: /mnt/khenarthi/music
 
 # Path to the beets library file.
-library: ~/beets/library.db
+library: /mnt/khenarthi/beets/library.db
 
 
 ##################
@@ -84,7 +84,7 @@ import:
     bell: yes
     
     # Specifies a filename where the importer’s log should be kept.
-    log: ~/beets/import.log
+    log: /mnt/khenarthi/beets/import.log
 
 
 #######################
@@ -193,6 +193,10 @@ fetchart:
     
     # If enabled, fetchart retrieves artwork in the highest resolution it can find.
     high_resolution: yes
+    
+    # A maximum image width to downscale fetched images if they are too big. The resize operation reduces image width
+    # to at most maxwidth pixels. The height is recomputed so that the aspect ratio is preserved.
+    max_width: 1000
 
 
 ###################
@@ -208,6 +212,11 @@ embedart:
     
     # Automatically remove the album art file for the album after it has been embedded.
     remove_art_file: no
+    
+    # A maximum width to downscale images before embedding them (the original image file is not altered). The resize
+    # operation reduces image width to at most maxwidth pixels. The height is recomputed so that the aspect ratio is
+    # preserved.
+    max_width: 1000
 
 
 ####################
