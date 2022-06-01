@@ -1,2 +1,2 @@
-# beets-config
-My personal beets config file (probably a forever work-in-progress).
+# music-tagging
+ Configuration files (mostly for beets) and scripts to help with music tagging. 
