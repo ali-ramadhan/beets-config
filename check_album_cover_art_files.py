@@ -13,7 +13,7 @@ from rich.progress import track
 console = Console(highlight=False)
 
 dir_to_walk = os.path.abspath(sys.argv[1])
-verbose = False
+verbose = True
 
 # for root, dirs, files in track(os.walk(dir_to_walk), description="Walking through music"):
 for root, dirs, files in os.walk(dir_to_walk):

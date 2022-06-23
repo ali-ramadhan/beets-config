@@ -54,8 +54,7 @@ for root, dirs, files in os.walk(dir_to_walk):
             flac_cover_sha256 = hashlib.sha256(flac.pictures[0].data).hexdigest()
             
             if flac_cover_sha256 == cover_sha256:
-                pass
-                # console.print(f"[magenta]{flac_filepath}[/magenta]: [green]cover sha256 match[/green]")
+                console.print(f"[magenta]{flac_filepath}[/magenta]: [green]cover sha256 match[/green]")
             else:
                 console.print(f"[magenta]{flac_filepath}[/magenta]: [red]cover sha256 do not match[/red]")
                 
@@ -66,8 +65,7 @@ for root, dirs, files in os.walk(dir_to_walk):
             mp3_cover_sha256 = hashlib.sha256(mp3.tags['APIC:'].data).hexdigest()
             
             if mp3_cover_sha256 == cover_sha256:
-                pass
-                # console.print(f"[magenta]{mp3_filepath}[/magenta]: [green]cover sha256 match[/green]")
+                console.print(f"[magenta]{mp3_filepath}[/magenta]: [green]cover sha256 match[/green]")
             else:
                 console.print(f"[magenta]{mp3_filepath}[/magenta]: [red]cover sha256 do not match[/red]")
 
