@@ -35,7 +35,7 @@ art_filename: cover
 format_album: "$albumartist - $album"
 
 # Format to use when listing individual items with the list command and other commands that need to print out items.
-format_item: "[$format] $artist - $album - $title [$bitdepth/$samplerate $bitrate, $length]"
+format_item: "[$format] $artist - $album - $title ($original_year->$year) [$bitdepth/$samplerate $bitrate, $length]"
 
 # Set the maximum number of characters in a filename, after which names will be truncated.
 max_filename_length: 255
@@ -198,6 +198,14 @@ fetchart:
     # to at most maxwidth pixels. The height is recomputed so that the aspect ratio is preserved.
     max_width: 1000
 
+    # List of sources to search for images. An asterisk * expands to all available sources.
+    sources:
+        - filesystem
+        - coverart: release
+        - itunes
+        - coverart: releasegroup
+        - '*'
+
 
 ###################
 # embedart plugin #
@@ -212,11 +220,14 @@ embedart:
     
     # Automatically remove the album art file for the album after it has been embedded.
     remove_art_file: no
-    
+  
+    # Only images with a width bigger or equal to minwidth are considered as valid album art candidates.
+    minwidth: 1000 
+
     # A maximum width to downscale images before embedding them (the original image file is not altered). The resize
     # operation reduces image width to at most maxwidth pixels. The height is recomputed so that the aspect ratio is
     # preserved.
-    max_width: 1000
+    maxwidth: 1000
 
 
 ####################
@@ -287,10 +298,10 @@ edit:
 #############################
 
 paths:
-    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/[$original_year] $album%aunique{}/$disc_and_track. $title
-    singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/Non-Album/$title
-    comp: Compilations/%the{$album%aunique{}}/$disc_and_track. $title
-    albumtype:soundtrack: Soundtracks/%the{$album%aunique{}}/$disc_and_track. $title
+    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/[%if{$original_year,$original_year,$year}] $album%aunique{}/$disc_and_track. $title
+    singleton: %bucket{%the{$albumartist},alpha}/%[%if{$original_year,$original_year,$year}] the{$albumartist}/Non-Album/$title
+    comp: Compilations/%the{$album%aunique{}} [%if{$original_year,$original_year,$year}]/$disc_and_track. $title
+    albumtype:soundtrack: Soundtracks/%the{$album%aunique{}} [%if{$original_year,$original_year,$year}]/$disc_and_track. $title
 
 
 ###############
