@@ -55,12 +55,13 @@ replace:
 
 # A list of plugin module names to load.
 plugins:
+    - albumtypes
     - badfiles
     # - beatport
+    # - beatport4
     - bucket
     # - deezer
     - discogs
-    - embedart
     - edit
     - embedart
     - extrafiles
@@ -126,6 +127,7 @@ import:
 musicbrainz:
     # The number of matches returned when sending search queries to the MusicBrainz server.
     searchlimit: 10
+
     # Use MusicBrainz genre tags to populate (and replace if it’s already set) the genre tag. This will make it a list
     # of all the genres tagged for the release and the release-group on MusicBrainz, separated by “; ” and sorted by the
     # total number of votes.
@@ -163,13 +165,10 @@ item_fields:
 album_fields:
     catalog: |
         if label and catalognum:
-            # return "{%s %s}" % (label, catalognum)
             return f" {{{label} {catalognum}}}"
         elif label:
-            # return "{%s}" % label
             return f" {{{label}}}"
         elif catalognum:
-            # return "{%s}" % catalognum
             return f" {{{catalognum}}}"
         else:
             return ""
@@ -188,7 +187,7 @@ album_fields:
         else:
             return ""
 
-    specific_album: |
+    album_comment: |
         if albumdisambig:
             return f" ({albumdisambig})"
         else:
@@ -352,12 +351,31 @@ missing:
 
 edit:
     # A space-separated list of item fields to include in the editor by default.
-    itemfields: track title artist albumartist album year original_year media format label catalognum
+    itemfields: track title artist albumartist album year original_year media format label catalognum comp albumdisambig
     
     # The same when editing albums.
-    albumfields: track title artist albumartist album year original_year media format label catalognum
+    albumfields: track title artist albumartist album year original_year media format label catalognum comp albumdisambig
 
-# %bucket{%the{$albumartist},alpha}/%the{$albumartist}/(%if{$original_year,$original_year,$year}) $albumartist - $album$specific_album$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
+
+#####################
+# albumtypes plugin #
+#####################
+
+# The albumtypes plugin adds the ability to format and output album types, such as “Album”, “EP”, “Single”, etc.
+
+albumtypes:
+    # An ordered list of album type to format mappings. The order of the mappings determines their order in the output.
+    # If a mapping is missing or blank, it will not be in the output.
+    types:
+        - ep: 'EP'
+        - single: 'Single'
+        - soundtrack: 'Soundtrack'
+        - live: 'Live'
+        - compilation: 'Anthology'
+        - remix: 'Remix'
+    ignore_va: compilation
+    bracket: '[]'
+
 
 ##################
 # rewrite plugin #
@@ -370,17 +388,6 @@ rewrite:
     media File: WEB
     media CD-R: CD
     media 12" Vinyl: Vinyl
-
-
-########################
-# copyartifacts plugin #
-########################
-
-# A plugin that moves non-music files during the import process.
-
-# copyartifacts:
-#     # Copy all non-music files.
-#     extensions: .*
 
 
 #####################
@@ -420,10 +427,10 @@ extrafiles:
 #############################
 
 paths:
-    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/(%if{$original_year,$original_year,$year}) $albumartist - $album$specific_album$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
+    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/$albumartist - $album$album_comment (%if{$original_year,$original_year,$year})$reissue$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]/$disc_and_track. $title
     singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/(%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$title
-    comp: Compilations/%bucket{%the{$album},alpha}/%the{$album}$specific_album (%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
-    albumtype:soundtrack: Soundtracks/%the{$album}$specific_album (%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
+    comp: Compilations/%bucket{%the{$album},alpha}/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
+    albumtype:soundtrack: Soundtracks/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
 
 
 ###############
