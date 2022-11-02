@@ -190,7 +190,7 @@ album_fields:
 
     album_comment: |
         if albumdisambig:
-            return f" ({albumdisambig})"
+            return f" ({albumdisambig.title()})"
         else:
             return ""
 
@@ -431,9 +431,9 @@ extrafiles:
 #############################
 
 paths:
-    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/$albumartist - $album$album_comment $atypes (%if{$original_year,$original_year,$year})$reissue$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]/%if{$multidisc,Disc $discnum/}$disc_and_track. $title
-    comp: Compilations/%bucket{%the{$album},alpha}/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
-    albumtype:soundtrack: Soundtracks/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
+    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/$albumartist - $album$album_comment %if{$atypes,$atypes }(%if{$original_year,$original_year,$year})$reissue$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]/%if{$multidisc,Disc $discnum/}$disc_and_track. $title
+    comp: Compilations/%bucket{%the{$album},alpha}/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$reissue$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]/%if{$multidisc,Disc $discnum/}$disc_and_track. $title
+    albumtype:soundtrack: Soundtracks/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$reissue$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]/%if{$multidisc,Disc $discnum/}$disc_and_track. $title
 
 
 ###############
