@@ -31,7 +31,7 @@ original_date: no
 per_disc_numbering: yes
 
 # When importing album art, the name of the file (without extension) where the cover art image should be placed.
-art_filename: cover
+art_filename: $album
 
 # Format to use when listing albums with list and other commands.
 format_album: "$albumartist - $album ($original_year/RE-$year) {$label $catalognum}"
@@ -47,11 +47,11 @@ replace:
     '[\\/]': _        # forward and back slashes
     '^\.': _          # leading dots
     '[\x00-\x1f]': _  # control characters
-    '[<>:"\?\*\|]': _ # Windows “reserved characters”
-    '\.$': _          # trailing dot
-    '\s+$': ''        # trailing whitespace
-    '^\s+': ''        # leading whitespace
-    '^-': _           # leading dashes
+    # '[<>:"\?\*\|]': _ # Windows “reserved characters”
+    # '\.$': _          # trailing dot
+    # '\s+$': ''        # trailing whitespace
+    # '^\s+': ''        # leading whitespace
+    # '^-': _           # leading dashes
 
 # A list of plugin module names to load.
 plugins:
@@ -159,11 +159,12 @@ match:
 # of a track’s fields in scope, so you can refer to any normal attributes (such as artist or title) as Python variables.
 item_fields:
     multidisc: 1 if disctotal > 1 else 0
-    disc_and_track: u'%1i-%02i' % (disc, track) if disctotal > 1 else u'%02i' % (track)
+    discnum: f"{disc:1d}" if disctotal < 10 else f"{disc:02d}"
+    disc_and_track: f"{disc:1d}-{track:02d}" if disctotal > 1 else f"{track:02d}"
 
 # You can also define fields for album templates.
 album_fields:
-    catalog: |
+    release: |
         if label and catalognum:
             return f" {{{label} {catalognum}}}"
         elif label:
@@ -367,14 +368,15 @@ albumtypes:
     # An ordered list of album type to format mappings. The order of the mappings determines their order in the output.
     # If a mapping is missing or blank, it will not be in the output.
     types:
-        - ep: 'EP'
-        - single: 'Single'
-        - soundtrack: 'Soundtrack'
-        - live: 'Live'
-        - compilation: 'Anthology'
-        - remix: 'Remix'
+        # - album: "Album"
+        - ep: "EP"
+        - single: "Single"
+        - soundtrack: "Soundtrack"
+        - live: "Live"
+        - compilation: "Anthology"
+        - remix: "Remix"
     ignore_va: compilation
-    bracket: '[]'
+    bracket: "[]"
 
 
 ##################
@@ -398,28 +400,30 @@ rewrite:
 
 extrafiles:
     patterns:
-        artworkdir:
-            - '[sS]cans/'
-            - '[sS]can/'
-            - '[aA]rtwork/'
-        artworkfiles:
-            # beets will take care of the cover image.
-            # - '*.png'
-            # - '*.jpg'
-            # - '*.jpeg'
-            # - '*.gif'
-            - '*.pdf'
-        datafiles:
-            - '*.log'
-            - '*.cue'
-            - '*.txt'
-            - '*/*.log'
-            - '*/*.cue'
-            - '*/*.txt'
+        scans:
+          - "[sS]can/"
+          - "[sS]cans/"
+        cue:
+          - "*.cue"
+        log:
+          - "*.log"
+        cue_disc1:
+          - "Disc 1/*.cue"
+        log_disc1:
+          - "Disc 1/*.log"
+        cue_disc2:
+          - "Disc 2/*.cue"
+        log_disc2:
+          - "Disc 2/*.log"
+
     paths:
-        artworkdir: $albumpath/Artwork
-        artworkfiles: $albumpath/Artwork/$filename
-        datafiles: $albumpath/Data/$filename
+        scans: $albumpath/Scans
+        cue: $albumpath/$album
+        log: $albumpath/$album
+        cue_disc1: $albumpath/Disc 1/$album - Disc 1
+        log_disc1: $albumpath/Disc 1/$album - Disc 1
+        cue_disc2: $albumpath/Disc 2/$album - Disc 2
+        log_disc2: $albumpath/Disc 2/$album - Disc 2
 
 
 #############################
@@ -427,10 +431,9 @@ extrafiles:
 #############################
 
 paths:
-    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/$albumartist - $album$album_comment (%if{$original_year,$original_year,$year})$reissue$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]/$disc_and_track. $title
-    singleton: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/(%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$title
-    comp: Compilations/%bucket{%the{$album},alpha}/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
-    albumtype:soundtrack: Soundtracks/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$catalog [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
+    default: %bucket{%the{$albumartist},alpha}/%the{$albumartist}/$albumartist - $album$album_comment $atypes (%if{$original_year,$original_year,$year})$reissue$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]/%if{$multidisc,Disc $discnum/}$disc_and_track. $title
+    comp: Compilations/%bucket{%the{$album},alpha}/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
+    albumtype:soundtrack: Soundtracks/%the{$album}$album_comment (%if{$original_year,$original_year,$year})$release [%if{$media,$media }$format %if{$bitdepth,${bitdepth}bit }$samplerate_precise]$reissue/$disc_and_track. $title
 
 
 ###############
