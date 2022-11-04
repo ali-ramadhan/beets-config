@@ -1,7 +1,7 @@
 # Moe global options
 
 # List of any plugins to explicitly enable.
-enable_plugins = ["disc_and_track", "album_bit_depth", "organize_extras"]
+enable_plugins = ["disc_and_track", "media_encoding", "organize_extras"]
 
 # Tells Moe where your music library resides.
 library_path = "/home/alir/sandbox/tagged-by-moe"
@@ -16,10 +16,10 @@ original_date = false
 asciify_paths = false
 
 # Album filesystem path format relative to the global configuration option, library_path.
-album_path = "{album.artist}/{album.artist} - {album.title} ({album.year}) {{{album.label} {album.catalog_num}}} [{album.media} {album_bit_depth(album)}]"
+album_path = "{album.artist}/{album.artist} - {album.title} ({album.year}) {{{album.label} {album.catalog_num}}} [{media_encoding(album)}]"
 
 # Track filesystem path format relative to album_path.
-track_path = "{disc_and_track(track, album)}. {track.title} [{track.audio_format.upper()} {track.sample_rate}Hz]{track.path.suffix}"
+track_path = "{disc_and_track(track, album)}. {track.title}{track.path.suffix}"
 
 # Extra filesystem path format relative to album_path.
 extra_path = "{organize_extras(extra)}"
